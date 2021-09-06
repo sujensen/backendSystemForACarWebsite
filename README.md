@@ -1,4 +1,25 @@
 ## About this Repository
+
+## Run the pricing-service
+
+Run the Eureka server (CarEurekaApplication), which is on port 8761.
+View the Eureka server console at:
+http://localhost:8761
+
+Next run the pricing microservice (PricingServiceApplication), which runs on port 8762.
+Check the h2 db at http://localhost:8762/h2
+To log into the h2 console:
+  - JDBC URL is jdbc:h2:mem:cars
+  - username is "sa", and no password.
+
+Check the Eureka console again, you will see pricing-service instance is running:
+http://localhost:8761
+
+Also run the tests in PricingServiceApplicationTests.
+
+
+
+-----------
 This repository is related to the Java Web Developer (ND035), Course - **Web Services and APIs**
 
 It contains the following folders:
