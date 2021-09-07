@@ -1,9 +1,19 @@
 package com.udacity.vehicles.service;
 
+import com.udacity.vehicles.client.maps.MapsClient;
+import com.udacity.vehicles.client.prices.PriceClient;
+import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Implements the car service create, read, update or delete
@@ -14,13 +24,16 @@ import org.springframework.stereotype.Service;
 public class CarService {
 
     private final CarRepository repository;
+    MapsClient maps;
+    PriceClient pricing;
 
-    public CarService(CarRepository repository) {
-        /**
-         * TODO: Add the Maps and Pricing Web Clients you create
-         *   in `VehiclesApiApplication` as arguments and set them here.
-         */
+    public CarService(CarRepository repository, @Autowired MapsClient maps, @Autowired PriceClient pricing) {
+
+        // Add the Maps and Pricing Web Clients you create
+        // in `VehiclesApiApplication` as arguments and set them here.
         this.repository = repository;
+        this.maps = maps;
+        this.pricing = pricing;
     }
 
     /**
@@ -28,7 +41,16 @@ public class CarService {
      * @return a list of all vehicles in the CarRepository
      */
     public List<Car> list() {
-        return repository.findAll();
+        List<Car> repoList = repository.findAll();
+
+        // Enhance the information on each car in the repo, by finding the
+        // price and address as well.
+        List<Car> newList = new ArrayList<Car>();
+        for (Car repoCar : repoList) {
+            Car newCar = findById(repoCar.getId());
+            newList.add(newCar);
+        }
+        return newList;
     }
 
     /**
@@ -37,31 +59,36 @@ public class CarService {
      * @return the requested car's information, including location and price
      */
     public Car findById(Long id) {
-        /**
-         * TODO: Find the car by ID from the `repository` if it exists.
-         *   If it does not exist, throw a CarNotFoundException
-         *   Remove the below code as part of your implementation.
-         */
-        Car car = new Car();
 
-        /**
-         * TODO: Use the Pricing Web client you create in `VehiclesApiApplication`
-         *   to get the price based on the `id` input'
-         * TODO: Set the price of the car
-         * Note: The car class file uses @transient, meaning you will need to call
-         *   the pricing service each time to get the price.
-         */
+        // Find the car by ID from the `repository` if it exists.
+        // If it does not exist, throw a CarNotFoundException
+        Optional<Car> optionalCar = Optional.ofNullable(repository.findCarById(id));
+        Car car = optionalCar.orElseThrow(CarNotFoundException::new);
+
+        // Use the Pricing Web client you create in `VehiclesApiApplication`
+        // to get the price based on the `id` input'.
+        // Set the price of the car.
+        // Note: The car class file uses @transient, meaning you will need to call
+        // the pricing service each time to get the price.
+
+        // There are only 20 prices, so if the id of the vehicle is > 20, use the remainder.
+        Long priceId = id;
+        if (id > 20) {
+            priceId = id % 20;
+        }
+        String price = pricing.getPrice(priceId);
+        car.setPrice(price);
 
 
-        /**
-         * TODO: Use the Maps Web client you create in `VehiclesApiApplication`
-         *   to get the address for the vehicle. You should access the location
-         *   from the car object and feed it to the Maps service.
-         * TODO: Set the location of the vehicle, including the address information
-         * Note: The Location class file also uses @transient for the address,
-         * meaning the Maps service needs to be called each time for the address.
-         */
-
+        // Use the Maps Web client you create in `VehiclesApiApplication`
+        // to get the address for the vehicle. You should access the location
+        // from the car object and feed it to the Maps service.
+        // Set the location of the vehicle, including the address information.
+        // The Location class file also uses @transient for the address,
+        // meaning the Maps service needs to be called each time for the address.
+        Location origLocation = car.getLocation();
+        Location newLocation = maps.getAddress(origLocation);
+        car.setLocation(newLocation);
 
         return car;
     }
@@ -75,12 +102,12 @@ public class CarService {
         if (car.getId() != null) {
             return repository.findById(car.getId())
                     .map(carToBeUpdated -> {
+                        carToBeUpdated.setCondition(car.getCondition());
                         carToBeUpdated.setDetails(car.getDetails());
                         carToBeUpdated.setLocation(car.getLocation());
                         return repository.save(carToBeUpdated);
                     }).orElseThrow(CarNotFoundException::new);
         }
-
         return repository.save(car);
     }
 
@@ -89,16 +116,13 @@ public class CarService {
      * @param id the ID number of the car to delete
      */
     public void delete(Long id) {
-        /**
-         * TODO: Find the car by ID from the `repository` if it exists.
-         *   If it does not exist, throw a CarNotFoundException
-         */
 
+        // Find the car by ID from the `repository` if it exists.
+        // If it does not exist, throw a CarNotFoundException
+        Optional<Car> optionalCar = Optional.ofNullable(repository.findCarById(id));
+        Car car = optionalCar.orElseThrow(CarNotFoundException::new);
 
-        /**
-         * TODO: Delete the car from the repository.
-         */
-
-
+        // Delete the car from the repository.
+        repository.delete(car);
     }
 }

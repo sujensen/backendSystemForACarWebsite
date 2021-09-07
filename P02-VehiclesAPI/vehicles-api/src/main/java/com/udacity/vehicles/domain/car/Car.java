@@ -13,6 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
+import com.udacity.vehicles.validation.OnCreateOrUpdate;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,27 +30,38 @@ public class Car {
 
     @Id
     @GeneratedValue
+    @ApiModelProperty(hidden = true)
+    @Null(groups = OnCreateOrUpdate.class)
     private Long id;
 
     @CreatedDate
+    @ApiModelProperty(hidden = true)
+    @Null(groups = OnCreateOrUpdate.class)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @ApiModelProperty(hidden = true)
+    @Null(groups = OnCreateOrUpdate.class)
     private LocalDateTime modifiedAt;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @ApiModelProperty(required = true, example = "USED")
     private Condition condition;
 
     @Valid
     @Embedded
+    @NotNull(groups = OnCreateOrUpdate.class)
     private Details details = new Details();
 
     @Valid
     @Embedded
+    @NotNull(groups = OnCreateOrUpdate.class)
     private Location location = new Location(0d, 0d);
 
     @Transient
+    @ApiModelProperty(hidden = true)
+    @Null(groups = OnCreateOrUpdate.class)
     private String price;
 
     public Long getId() {

@@ -1,8 +1,13 @@
 package com.udacity.vehicles.domain.car;
 
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -14,27 +19,36 @@ import javax.validation.constraints.NotNull;
 public class Details {
 
     @NotBlank
+    @ApiModelProperty(example = "sedan")
     private String body;
 
     @NotBlank
+    @ApiModelProperty(example = "Impala")
     private String model;
 
     @NotNull
     @ManyToOne
     private Manufacturer manufacturer;
 
+    @ApiModelProperty(example = "4")
     private Integer numberOfDoors;
 
+    @ApiModelProperty(example = "Gasoline")
     private String fuelType;
 
+    @ApiModelProperty(example = "3.6L V6")
     private String engine;
 
+    @ApiModelProperty(example = "32280")
     private Integer mileage;
 
+    @ApiModelProperty(example = "2018")
     private Integer modelYear;
 
+    @ApiModelProperty(example = "2018")
     private Integer productionYear;
 
+    @ApiModelProperty(example = "white")
     private String externalColor;
 
     public String getBody() {

@@ -1,13 +1,19 @@
-## About this Repository
+# About this Repository: updated for my project assignment for Java Web Development!
+
+## Run the location service (Boogle maps)
+
+In the "boogle-maps" module, run BoogleMapsApplication, and you can check it by going to:
+http://localhost:9191/maps/?lat=20.0&lon=30.0
 
 ## Run the pricing-service
 
-Run the Eureka server (CarEurekaApplication), which is on port 8761.
+In the "car-eureka-server" module, run the Eureka server (CarEurekaApplication), which is on port 8761.
 View the Eureka server console at:
 http://localhost:8761
 
-Next run the pricing microservice (PricingServiceApplication), which runs on port 8762.
+Next, in the "pricing-service" module, run the pricing microservice (PricingServiceApplication), which runs on port 8762.
 Check the h2 db at http://localhost:8762/h2
+
 To log into the h2 console:
   - JDBC URL is jdbc:h2:mem:cars
   - username is "sa", and no password.
@@ -15,10 +21,18 @@ To log into the h2 console:
 Check the Eureka console again, you will see pricing-service instance is running:
 http://localhost:8761
 
-Also run the tests in PricingServiceApplicationTests.
+## Run the Vehicles API
 
+In the "vehicles-api" module, run the API (VehiclesApiApplication), which is on port 8080.
+Access the API, such as with cURL or Postman, at:
+http://localhost:8080/cars
 
+And better than that, you can access it via the Swagger UI, which will show you
+all the API requests, their valid inputs, and submit the requests for you:
+http://localhost:8080/swagger-ui.html
 
+-----------
+## Original ReadMe, below (before it was forked to this repo).
 -----------
 This repository is related to the Java Web Developer (ND035), Course - **Web Services and APIs**
 
