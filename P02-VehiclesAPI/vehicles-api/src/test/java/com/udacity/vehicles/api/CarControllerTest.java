@@ -94,6 +94,29 @@ public class CarControllerTest {
     }
 
     /**
+     * Tests for successful update of an existing car in the system
+     *
+     * @throws Exception when car update fails in the system
+     */
+    @Test
+    public void updateCar() throws Exception {
+        Car car = getCar();
+        // Update condition and details of car
+        car.setCondition(Condition.NEW);
+        Details carDetails = car.getDetails();
+        carDetails.setBody("truck");
+        carDetails.setModel("Silverado");
+        car.setDetails(carDetails);
+
+        mvc.perform(
+                put(new URI("/cars/1"))
+                        .content(json.write(car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+    }
+
+    /**
      * Tests if the read operation appropriately returns a list of vehicles.
      *
      * @throws Exception if the read operation of the vehicle list fails

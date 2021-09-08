@@ -74,7 +74,7 @@ class CarController {
      * @return response that the new vehicle was added to the system
      * @throws URISyntaxException if the request contains invalid fields or syntax
      */
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Validated
     ResponseEntity<?> post(@Validated(OnCreateOrUpdate.class) @RequestBody Car car) throws URISyntaxException {
 
@@ -94,7 +94,7 @@ class CarController {
      * @param car The updated information about the related vehicle.
      * @return response that the vehicle was updated in the system
      */
-    @PutMapping("/{id}")
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Validated
     ResponseEntity<?> put(@PathVariable Long id, @Validated(OnCreateOrUpdate.class) @RequestBody Car car) {
 
