@@ -77,12 +77,20 @@ public class CarControllerTest {
     @Test
     public void createCar() throws Exception {
         Car car = getCar();
-        mvc.perform(
+        MvcResult result = mvc.perform(
                 post(new URI("/cars"))
                         .content(json.write(car).getJson())
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
+        JSONObject resultContent = new JSONObject(result.getResponse().getContentAsString());
+        // Assert that the car added has the expected condition and details.
+        assertTrue(resultContent.has("condition"));
+        assertTrue(resultContent.getString("condition").equals("USED"));
+        assertTrue(resultContent.has("details"));
+        assertTrue(resultContent.getJSONObject("details").getString("externalColor").equals("white"));
+        assertTrue(resultContent.getJSONObject("details").getString("fuelType").equals("Gasoline"));
     }
 
     /**
